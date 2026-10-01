@@ -2,6 +2,7 @@
 
 $siteUrl = 'https://edugrow.kr'
 $verification = '5102b73793afd2b7a181cc7610526b5c668970b5'
+$googleVerification = '30EmtwePj6A4sjdlOnIHnXM_PbOWzJkuM_wnzxn-6oo'
 $utf8 = New-Object System.Text.UTF8Encoding($false)
 
 $districts = @(
@@ -40,6 +41,7 @@ function Get-Head([string]$Title, [string]$Description, [string]$Canonical, [str
   <title>$Title</title>
   <meta name="description" content="$Description">
   <meta name="naver-site-verification" content="$verification">
+  <meta name="google-site-verification" content="$googleVerification">
   <meta name="theme-color" content="#17352b">
   <meta property="og:type" content="website">
   <meta property="og:title" content="$Title">
