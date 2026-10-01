@@ -88,8 +88,8 @@ h2 { margin: 0; font-family: "Gowun Batang", serif; font-size: clamp(2.3rem, 5vw
 
 .area { max-width: var(--max-width); margin: 0 auto; padding: 8rem 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
 .districts { align-self: center; display: grid; grid-template-columns: repeat(3, 1fr); }
-.districts span { display: grid; place-items: center; aspect-ratio: 1; margin: -1px 0 0 -1px; border: 1px solid var(--line); font-family: "Gowun Batang", serif; font-size: 1.25rem; transition: background .2s, color .2s; }
-.districts span:hover { color: var(--forest); background: var(--leaf); }
+.districts a { display: grid; place-items: center; aspect-ratio: 1; margin: -1px 0 0 -1px; border: 1px solid var(--line); font-family: "Gowun Batang", serif; font-size: 1.25rem; transition: background .2s, color .2s; }
+.districts a:hover, .districts a:focus-visible { color: var(--forest); background: var(--leaf); }
 .area-note { grid-column: 2; margin: 0; color: var(--muted); }
 
 .contact { display: grid; grid-template-columns: .85fr 1.15fr; gap: clamp(3rem, 8vw, 8rem); padding: 7rem max(24px, calc((100% - var(--max-width))/2)); background: #d9e7d6; }
@@ -104,6 +104,32 @@ h2 { margin: 0; font-family: "Gowun Batang", serif; font-size: clamp(2.3rem, 5vw
 .consent input { width: 18px; height: 18px; accent-color: var(--forest); }
 .button-submit { color: white; background: var(--forest); }
 .form-status { min-height: 1.5rem; margin: 0; font-size: .9rem; }
+
+.location-page .site-header { position: relative; left: auto; width: 100%; height: 80px; padding: 0 max(24px, calc((100% - var(--max-width))/2)); transform: none; color: white; background: var(--forest); border-bottom-color: rgba(255,255,255,.2); }
+.location-main { min-height: 70vh; }
+.location-hero { padding: 5.5rem max(24px, calc((100% - var(--max-width))/2)) 6rem; background: var(--forest); color: white; }
+.breadcrumbs { display: flex; gap: .65rem; margin-bottom: 3.5rem; color: rgba(255,255,255,.62); font-size: .82rem; }
+.breadcrumbs span { color: rgba(255,255,255,.35); }
+.location-hero h1 { max-width: 900px; margin: 0; font-family: "Gowun Batang", serif; font-size: clamp(3rem, 7vw, 6.5rem); line-height: 1.12; letter-spacing: 0; }
+.location-hero > p { max-width: 680px; margin: 1.7rem 0 0; color: rgba(255,255,255,.78); font-size: 1.12rem; }
+.location-layout { max-width: var(--max-width); margin: 0 auto; padding: 7rem 24px; }
+.location-intro { display: grid; grid-template-columns: .8fr 1.2fr; gap: 4rem; padding-bottom: 6rem; }
+.location-intro-copy { max-width: 640px; color: #46524b; font-size: 1.04rem; }
+.location-intro-copy p { margin: 0 0 1.4rem; }
+.grade-guide { padding: 5rem 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.grade-guide h2, .local-list h2 { font-size: clamp(2rem, 4vw, 3.6rem); }
+.grade-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3rem; }
+.grade-grid article { padding-top: 1.4rem; border-top: 3px solid var(--forest); }
+.grade-grid h3 { margin: 0 0 .8rem; font-size: 1.08rem; }
+.grade-grid p { margin: 0; color: var(--muted); }
+.local-list { padding-top: 6rem; }
+.area-links { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 3rem; border-top: 1px solid var(--line); }
+.area-links a { min-height: 86px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.2rem; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.area-links a:nth-child(4n) { border-right: 0; }
+.area-links a:hover, .area-links a:focus-visible { background: var(--leaf); }
+.location-cta { display: flex; justify-content: space-between; align-items: center; gap: 2rem; margin-top: 6rem; padding: 2.5rem; color: white; background: var(--forest); }
+.location-cta h2 { font-size: clamp(1.8rem, 4vw, 3.2rem); }
+.location-cta .button { flex: 0 0 auto; color: var(--forest); background: var(--leaf); }
 
 footer { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 1rem; padding: 3rem max(24px, calc((100% - var(--max-width))/2)); color: rgba(255,255,255,.7); background: #101814; font-size: .85rem; }
 .footer-brand { color: white; }
@@ -136,6 +162,16 @@ footer > p { margin: 0; }
   .program-content { padding: 5rem 16px; }
   .area { padding: 6rem 16px; grid-template-columns: 1fr; }
   .area-note { grid-column: 1; }
+  .location-page .site-header { padding: 0 16px; }
+  .location-hero { padding: 4rem 16px 5rem; }
+  .location-hero h1 { font-size: 2.65rem; word-break: keep-all; }
+  .location-layout { padding: 5rem 16px; }
+  .location-intro { grid-template-columns: 1fr; gap: 2rem; padding-bottom: 4rem; }
+  .grade-grid { grid-template-columns: 1fr; }
+  .area-links { grid-template-columns: repeat(2, 1fr); }
+  .area-links a:nth-child(4n) { border-right: 1px solid var(--line); }
+  .area-links a:nth-child(2n) { border-right: 0; }
+  .location-cta { align-items: flex-start; flex-direction: column; padding: 2rem; }
   .contact { grid-template-columns: 1fr; padding: 6rem 16px; }
   footer { grid-template-columns: 1fr; }
   .copyright { grid-column: 1; }
