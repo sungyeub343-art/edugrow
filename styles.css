@@ -56,6 +56,7 @@ button, input, select, textarea { font: inherit; }
 .hero-actions { display: flex; align-items: center; gap: 2rem; margin-top: 2.5rem; }
 .button { display: inline-flex; justify-content: center; align-items: center; min-height: 52px; padding: .8rem 1.4rem; border: 0; cursor: pointer; font-weight: 700; }
 .button-primary { color: var(--forest); background: var(--leaf); }
+.button-phone { border: 1px solid rgba(255,255,255,.75); color: white; background: rgba(9,25,20,.2); }
 .text-link { padding: .6rem 0; border-bottom: 1px solid rgba(255,255,255,.65); }
 .hero-note { position: absolute; right: max(24px, calc((100% - var(--max-width))/2)); bottom: 36px; z-index: 1; display: flex; gap: 2rem; font-size: .8rem; }
 .hero-note span { padding-left: 1rem; border-left: 1px solid var(--leaf); }
