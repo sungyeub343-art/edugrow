@@ -133,31 +133,41 @@
         <h2 id="contact-title">지금 필요한 수업부터<br>함께 찾아보세요</h2>
         <p>간단한 정보를 남겨주시면 확인 후 상담을 도와드립니다.</p>
       </div>
-      <form class="contact-form" id="consultation-form">
+      <form class="contact-form" id="consultation-form" action="https://formsubmit.co/sungyeub343@gmail.com" method="POST">
+        <input type="hidden" name="_subject" value="대전 수학과외 새 상담 신청">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_next" value="https://edugrow.kr/?submitted=true#contact">
+        <label>
+          <span>학생 이름</span>
+          <input name="학생 이름" type="text" placeholder="학생 이름을 입력해 주세요" required>
+        </label>
         <label>
           <span>학생 학년</span>
-          <select name="grade" required>
+          <select name="학생 학년" required>
             <option value="">선택해 주세요</option>
             <option>초등학생</option>
-            <option>중학생</option>
-            <option>고등학생</option>
-            <option>기타</option>
+            <option>중1</option>
+            <option>중2</option>
+            <option>중3</option>
+            <option>고1</option>
+            <option>고2</option>
+            <option>고3</option>
           </select>
         </label>
-        <label>
-          <span>거주 지역</span>
-          <input name="area" type="text" placeholder="예: 유성구 노은동" required>
+        <label class="full-width">
+          <span>거주하고 계신 도로명주소 (동호수까지 기재 부탁드립니다.)</span>
+          <input name="도로명주소" type="text" placeholder="예: 대전광역시 유성구 대학로 00, 000동 000호" autocomplete="street-address" required>
         </label>
-        <label>
+        <label class="full-width">
           <span>연락처</span>
-          <input name="phone" type="tel" inputmode="tel" placeholder="010-0000-0000" autocomplete="tel" required>
+          <input name="연락처" type="tel" inputmode="tel" placeholder="010-0000-0000" autocomplete="tel" required>
         </label>
         <label class="full-width">
           <span>상담 내용</span>
-          <textarea name="message" rows="3" placeholder="현재 고민과 희망하는 수업을 적어주세요."></textarea>
+          <textarea name="상담 내용" rows="3" placeholder="현재 고민과 희망하는 수업을 적어주세요."></textarea>
         </label>
         <label class="consent full-width">
-          <input name="privacy" type="checkbox" required>
+          <input name="개인정보 수집 동의" type="checkbox" value="동의함" required>
           <span>상담을 위한 개인정보 수집 및 이용에 동의합니다.</span>
         </label>
         <button class="button button-submit full-width" type="submit">상담 신청하기</button>

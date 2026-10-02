@@ -1,9 +1,7 @@
-const form = document.querySelector("#consultation-form");
 const formStatus = document.querySelector("#form-status");
 
 document.querySelector("#year").textContent = new Date().getFullYear();
 
-form.addEventListener("submit", (event) => {
-  event.preventDefault();
-  formStatus.textContent = "상담 접수 기능은 연락처 연결 후 활성화됩니다.";
-});
+if (new URLSearchParams(window.location.search).get("submitted") === "true") {
+  formStatus.textContent = "상담 신청이 완료되었습니다. 확인 후 연락드리겠습니다.";
+}
