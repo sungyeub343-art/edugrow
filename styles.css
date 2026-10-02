@@ -39,7 +39,7 @@ button, input, select, textarea { font: inherit; }
   border-bottom: 1px solid rgba(255,255,255,.35);
 }
 .brand { display: flex; align-items: center; gap: .7rem; font-weight: 800; font-size: 1.05rem; }
-.brand-mark { display: grid; place-items: center; width: 32px; height: 32px; color: var(--forest); background: var(--leaf); font-family: Georgia, serif; font-size: 1.25rem; }
+.brand-mark { display: block; flex: 0 0 auto; width: 32px; height: 32px; overflow: hidden; background: url("logo.svg") center / contain no-repeat; font-size: 0; }
 .desktop-nav { display: flex; gap: 2.5rem; font-size: .92rem; }
 .desktop-nav a { transition: opacity .2s; }
 .desktop-nav a:hover { opacity: .65; }
