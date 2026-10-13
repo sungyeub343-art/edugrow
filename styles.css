@@ -23,6 +23,82 @@ img { display: block; max-width: 100%; }
 button, input, select, textarea { font: inherit; }
 .skip-link { position: fixed; left: 1rem; top: -4rem; z-index: 100; background: white; padding: .7rem 1rem; }
 .skip-link:focus { top: 1rem; }
+.modal-open { overflow: hidden; }
+.region-dialog {
+  width: min(920px, calc(100% - 48px));
+  max-height: calc(100vh - 48px);
+  margin: auto;
+  padding: 0;
+  color: var(--ink);
+  background: var(--white);
+  border: 0;
+  border-radius: 24px;
+  box-shadow: 0 30px 80px rgba(3, 18, 14, .3);
+}
+.region-dialog::backdrop { background: rgba(5, 33, 26, .88); backdrop-filter: blur(6px); }
+.region-dialog-content { position: relative; padding: clamp(2.5rem, 6vw, 4.5rem); }
+.region-dialog-close {
+  position: absolute;
+  top: 28px;
+  right: 28px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  color: var(--forest);
+  background: #dce5df;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.region-dialog-close::before, .region-dialog-close::after {
+  content: "";
+  position: absolute;
+  top: 21px;
+  left: 12px;
+  width: 20px;
+  height: 2px;
+  background: currentColor;
+}
+.region-dialog-close::before { transform: rotate(45deg); }
+.region-dialog-close::after { transform: rotate(-45deg); }
+.region-dialog-close:hover, .region-dialog-close:focus-visible { background: var(--leaf); }
+.region-dialog-label {
+  margin: 0 0 1rem;
+  color: var(--forest);
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .22em;
+}
+.region-dialog h2 { max-width: 760px; font-size: clamp(2.5rem, 5vw, 4.2rem); }
+.region-dialog #region-dialog-description { margin: 1rem 0 1.8rem; color: var(--muted); }
+.region-dialog-links { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.region-dialog-links a {
+  min-height: 104px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.2rem;
+  background: #edf3f0;
+  border: 1px solid #c5d5ce;
+  border-radius: 14px;
+  transition: background .2s, border-color .2s, transform .2s;
+}
+.region-dialog-links a > span:first-child {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  color: white;
+  background: #d45c43;
+  border-radius: 50%;
+  font-size: .63rem;
+  font-weight: 700;
+}
+.region-dialog-links strong { font-family: "Gowun Batang", serif; font-size: 1.3rem; }
+.region-dialog-links a > span:last-child { color: #7c8e86; }
+.region-dialog-links a:hover, .region-dialog-links a:focus-visible { background: #e2ed67; border-color: var(--leaf); transform: translateY(-2px); }
+.mobile-only { display: none; }
 
 .site-header {
   position: absolute;
@@ -141,6 +217,12 @@ footer > p { margin: 0; }
 @keyframes rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
 
 @media (max-width: 800px) {
+  .region-dialog { width: calc(100% - 32px); max-height: calc(100vh - 32px); border-radius: 18px; }
+  .region-dialog-content { padding: 3.5rem 1.25rem 1.5rem; }
+  .region-dialog-close { top: 14px; right: 14px; }
+  .region-dialog h2 { font-size: clamp(2rem, 9vw, 3.3rem); }
+  .region-dialog-links { grid-template-columns: repeat(2, 1fr); }
+  .region-dialog-links a { min-height: 88px; padding: .9rem; }
   .site-header { width: calc(100% - 32px); height: 72px; }
   .desktop-nav { display: none; }
   .header-cta { padding: .5rem .75rem; }
@@ -179,6 +261,10 @@ footer > p { margin: 0; }
 }
 
 @media (max-width: 480px) {
+  .mobile-only { display: block; }
+  .region-dialog #region-dialog-description { margin-bottom: 1.2rem; font-size: .9rem; }
+  .region-dialog-links { grid-template-columns: 1fr; gap: 7px; }
+  .region-dialog-links a { min-height: 70px; }
   .brand { font-size: .92rem; }
   .brand-mark { width: 28px; height: 28px; }
   .hero-note span { width: 100%; }
