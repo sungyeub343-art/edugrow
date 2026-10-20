@@ -171,16 +171,8 @@ h2 { margin: 0; font-family: "Gowun Batang", serif; font-size: clamp(2.3rem, 5vw
 
 .contact { display: grid; grid-template-columns: .85fr 1.15fr; gap: clamp(3rem, 8vw, 8rem); padding: 7rem max(24px, calc((100% - var(--max-width))/2)); background: #d9e7d6; }
 .contact-heading > p:last-child { max-width: 400px; margin-top: 2rem; color: #4c5d54; }
-.contact-form { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; align-content: start; }
-.contact-form label:not(.consent) { display: flex; flex-direction: column; gap: .45rem; }
-.contact-form label > span { font-size: .86rem; font-weight: 700; }
-.contact-form input:not([type="checkbox"]), .contact-form select, .contact-form textarea { width: 100%; border: 0; border-bottom: 1px solid #77877d; border-radius: 0; padding: .8rem .2rem; color: var(--ink); background: transparent; outline: none; }
-.contact-form input:focus, .contact-form select:focus, .contact-form textarea:focus { border-color: var(--ink); box-shadow: 0 1px 0 var(--ink); }
-.full-width { grid-column: 1 / -1; }
-.consent { display: flex; align-items: center; gap: .65rem; }
-.consent input { width: 18px; height: 18px; accent-color: var(--forest); }
-.button-submit { color: white; background: var(--forest); }
-.form-status { min-height: 1.5rem; margin: 0; font-size: .9rem; }
+.contact-actions { display: flex; align-items: center; }
+.button-call { color: white; background: var(--forest); font-size: 1.15rem; }
 
 .location-page .site-header { position: relative; left: auto; width: 100%; height: 80px; padding: 0 max(24px, calc((100% - var(--max-width))/2)); transform: none; color: white; background: var(--forest); border-bottom-color: rgba(255,255,255,.2); }
 .location-main { min-height: 70vh; }
@@ -273,8 +265,6 @@ footer > p { margin: 0; }
   .steps article:not(:first-child) { padding-left: 0; }
   .steps h3 { margin-top: 2rem; }
   .districts { grid-template-columns: repeat(2, 1fr); }
-  .contact-form { grid-template-columns: 1fr; }
-  .contact-form > * { grid-column: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
