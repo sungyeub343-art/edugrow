@@ -130,6 +130,7 @@ function Get-Head([string]$Title, [string]$Description, [string]$Canonical, [str
   <meta property="og:image" content="$ogImage">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="$Canonical">
+  <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" href="/logo.svg" type="image/svg+xml">
   <link rel="alternate" type="application/rss+xml" title="대전 수학과외" href="$siteUrl/rss.xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
