@@ -200,6 +200,23 @@ footer p a { color: white; text-decoration: underline; }
 .grade-grid h3 { margin: 0 0 .8rem; font-size: 1.08rem; }
 .grade-grid p { margin: 0; color: var(--muted); }
 .local-list { padding-top: 6rem; }
+.guide-body { max-width: 780px; color: #3d4943; font-size: 1.05rem; }
+.guide-body h2 { margin: 3.5rem 0 1.2rem; color: var(--ink); font-size: clamp(1.6rem, 3vw, 2.4rem); }
+.guide-body h2:first-child { margin-top: 0; }
+.guide-body p { margin: 0 0 1.2rem; }
+.guide-body ul, .guide-body ol { margin: 0 0 1.4rem; padding-left: 1.3rem; }
+.guide-body li + li { margin-top: .6rem; }
+.guide-body li strong { color: var(--ink); }
+.guide-body p > a:not(.more-link) { border-bottom: 1px solid currentColor; font-weight: 700; }
+.table-wrap { overflow-x: auto; margin-bottom: 1rem; }
+.guide-body table { width: 100%; min-width: 560px; border-collapse: collapse; font-size: .95rem; }
+.guide-body th, .guide-body td { padding: .85rem .8rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.guide-body thead th { color: white; background: var(--forest); }
+.guide-body tbody th { color: var(--ink); white-space: nowrap; }
+.guide-body + .faq { margin-top: 4rem; border-top: 1px solid var(--line); }
+.guide-cards { max-width: var(--max-width); margin: 0 auto; padding: 0 24px 8rem; }
+.guide-cards .area-links { grid-template-columns: repeat(3, 1fr); }
+.guide-cards .area-links a:nth-child(3n) { border-right: 0; }
 .grade-guide + .grade-guide { border-top: 0; }
 .more-link { display: inline-block; margin-top: 1rem; border-bottom: 1px solid currentColor; font-size: .92rem; font-weight: 700; }
 .more-link:hover, .more-link:focus-visible { color: var(--forest); background: var(--leaf); }
@@ -222,6 +239,8 @@ footer p a { color: white; text-decoration: underline; }
 footer { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 1rem; padding: 3rem max(24px, calc((100% - var(--max-width))/2)); color: rgba(255,255,255,.7); background: #101814; font-size: .85rem; }
 .footer-brand { color: white; }
 footer > p { margin: 0; }
+.footer-links { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; grid-column: 1; }
+.footer-links a { color: rgba(255,255,255,.7); text-decoration: underline; }
 .copyright { grid-column: 2; }
 
 @keyframes reveal-image { from { transform: scale(1.06); filter: brightness(.7); } to { transform: scale(1); filter: brightness(1); } }
@@ -258,6 +277,9 @@ footer > p { margin: 0; }
   .area-note { grid-column: 1; }
   .district-levels { grid-template-columns: repeat(2, 1fr); }
   .home-faq { padding: 0 16px 6rem; }
+  .guide-cards { padding: 0 16px 6rem; }
+  .guide-cards .area-links { grid-template-columns: 1fr; }
+  .guide-cards .area-links a { border-right: 0; }
   .location-page .site-header { padding: 0 16px; }
   .location-hero { padding: 4rem 16px 5rem; }
   .location-hero h1 { font-size: 2.65rem; word-break: keep-all; }
