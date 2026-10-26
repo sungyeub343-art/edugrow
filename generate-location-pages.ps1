@@ -258,6 +258,41 @@ $guideLinksHtml = @"
         <a href="../../../guide/school-district/"><span>대전 학군지 수학 공부</span><span aria-hidden="true">→</span></a></div></section>
 "@
 
+# 학교 목록: 전국초중등학교위치표준데이터(2026-10-26)에서 대전 운영 학교를 구·학교급별로 추린 것. dong은 지번 주소의 법정동
+$schoolData = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot 'data\daejeon-schools.json'), $utf8) | ConvertFrom-Json
+$levelLabels = [ordered]@{ elementary = '초등학교'; middle = '중학교'; high = '고등학교' }
+
+function Get-Schools([string]$DistrictSlug, [string]$Level, [string]$Dong) {
+    $list = @($schoolData.$DistrictSlug.$Level)
+    if ($Dong) { $list = @($list | Where-Object { $_.dong -eq $Dong }) }
+    return $list
+}
+
+# 법정동 이름으로 학교를 찾는다. 둔산1동처럼 번호가 붙은 행정동은 번호를 뺀 법정동(둔산동)으로 찾는다
+function Get-LegalDong([string]$DongName) {
+    return ($DongName -replace '\d+동$', '동')
+}
+
+function Get-SchoolSection([string]$AreaLabel, [string]$DistrictSlug, [string[]]$Levels, [string]$Dong) {
+    $groups = foreach ($level in $Levels) {
+        $schools = Get-Schools $DistrictSlug $level $Dong
+        if ($schools.Count -eq 0) { continue }
+        $items = ($schools | ForEach-Object { "<li>$($_.name)</li>" }) -join ''
+        "          <div class=`"school-group`"><h3>$AreaLabel $($levelLabels[$level]) 수학과외 <span>$($schools.Count)곳</span></h3><ul class=`"school-list`">$items</ul></div>"
+    }
+    if (-not $groups) { return '' }
+    $levelText = ($Levels | ForEach-Object { $levelLabels[$_] }) -join '·'
+    return @"
+      <section class="school-guide" aria-labelledby="school-title">
+        <p class="section-number">LOCAL SCHOOLS</p>
+        <h2 id="school-title">$AreaLabel $levelText<br>학교별 수학 내신 대비</h2>
+        <p class="school-intro">$AreaLabel 지역 $levelText 학생의 교과서, 시험 범위, 학교 프린트와 기출 유형을 확인해 학교별로 수학 내신을 대비합니다. 아래 학교에 다니는 학생이라면 학교 일정에 맞춘 1:1 수업 계획을 안내해 드립니다.</p>
+$($groups -join "`n")
+        <p class="school-source">학교 목록 출처: 전국초중등학교위치표준데이터(2026년 10월 기준). 지번 주소의 법정동 기준으로 정리했습니다.</p>
+      </section>
+"@
+}
+
 # 수학학원·공부방 검색 수요가 확인된 동에 붙이는 안내 문단
 $dongNotes = @{
     'gwanpyeong' = '관평동에서 수학학원, 교습소, 공부방을 함께 알아보는 학부모가 많습니다. 학원 차량이나 반 편성보다 우리 아이가 수업 중에 질문을 하는지, 기초에 빈틈이 있는지를 먼저 보면 학원과 1:1 과외 중 무엇이 맞을지 판단하기 쉽습니다.'
@@ -309,6 +344,8 @@ foreach ($district in $districts) {
         $dongHead = Get-Head $dongTitle $dongDescription $dongUrl '../../../styles.css' $dongLd
         $dongHeader = Get-Header '../../../'
         $dongLevels = Get-LevelSection $dongName $district.Name '../'
+        $legalDong = Get-LegalDong $dongName
+        $dongSchools = Get-SchoolSection $legalDong $district.Slug @('elementary','middle','high') $legalDong
         $dongGradeGuide = Get-GradeGuide "$($district.Name) $dongName"
         $dongFaqSection = Get-FaqSection "$dongName 수학과외 자주 묻는 질문" $dongFaq
         $dongCta = Get-Cta "$dongName 수학과외 상담"
@@ -333,6 +370,7 @@ $dongHeader
         <div class="location-intro-copy">$dongNote<p>$($district.Character)</p><p>$dongName 수학과외는 현재 사용하는 교재와 최근 시험 결과를 먼저 살펴봅니다. 정답 개수만 확인하지 않고 개념 이해, 풀이 순서, 계산 습관 중 어디에서 막혔는지 구분해 다음 학습량을 정합니다.</p><p>초등학생, 중1·중2·중3, 고1·고2·고3 등 학년별로 필요한 목표가 다르기 때문에 $dongName 초등수학, 중등수학, 고등수학 수업은 상담에서 학년과 목표를 확인한 뒤 계획합니다.</p><p>대면 수업 가능 여부와 시간은 학생의 학년, $dongName 내 위치, 희망 일정에 따라 상담 후 안내합니다. 온라인 수업도 학습 상황에 맞춰 협의할 수 있습니다.</p></div>
       </section>
 $dongLevels
+$dongSchools
 $dongGradeGuide
 $dongFaqSection
       <section class="local-list" aria-labelledby="nearby-title"><p class="section-number">NEARBY AREA</p><h2 id="nearby-title">$($district.Name) 다른 지역 수학과외</h2><div class="area-links">$($nearbyLinks -join "`n")</div></section>
@@ -367,6 +405,7 @@ $dongFooter</body>
         $hubHead = Get-Head $hubTitle $hubDescription $hubUrl '../../../styles.css' $hubLd
         $hubHeader = Get-Header '../../../'
         $hubLevels = Get-LevelSection $hubName $district.Name '../'
+        $hubSchools = Get-SchoolSection $hubName $district.Slug @('elementary','middle','high') $hubName
         $hubSubLinks = $hub.Dongs | ForEach-Object { "        <a href=`"../$_/`"><span>$($dongNames[$_]) 수학과외</span><span aria-hidden=`"true`">→</span></a>" }
         $otherHubLinks = @($districtHubs | Where-Object { $_.Slug -ne $hub.Slug } | ForEach-Object { "        <a href=`"../$($_.Slug)/`"><span>$($_.Name) 수학과외</span><span aria-hidden=`"true`">→</span></a>" })
         $otherHubLinks += "        <a href=`"../`"><span>$districtArea 수학과외</span><span aria-hidden=`"true`">→</span></a>"
@@ -394,6 +433,7 @@ $hubHeader
         <div class="location-intro-copy">$hubNote<p>$($district.Character)</p><p>$hubName 수학과외는 최근 시험지와 교재로 현재 실력을 진단한 뒤, 다니는 학교의 시험 범위와 진도에 맞춰 수업 계획을 세웁니다. 정답 개수보다 개념 이해, 풀이 순서, 계산 습관 중 어디에서 막혔는지를 먼저 구분합니다.</p><p>$hubName 수학학원, 공부방, 교습소와 1:1 과외 사이에서 고민된다면 학생이 수업 중에 질문을 잘 하는지, 기초에 빈틈이 있는지부터 확인해 보세요. 판단 기준은 <a class="more-link" href="../../../guide/academy-vs-tutoring/">수학학원 vs 1:1 과외 비교</a>에 정리해 두었습니다.</p></div>
       </section>
 $hubLevels
+$hubSchools
 $hubFaqSection
       <section class="local-list" aria-labelledby="sub-title"><p class="section-number">$($hub.Dongs.Count) AREAS</p><h2 id="sub-title">$hubName 세부 지역</h2><div class="area-links">$($hubSubLinks -join "`n")</div></section>
       <section class="local-list" aria-labelledby="nearby-title"><p class="section-number">NEARBY AREA</p><h2 id="nearby-title">$($district.Name) 다른 생활권</h2><div class="area-links">$($otherHubLinks -join "`n")</div></section>
@@ -415,6 +455,7 @@ $hubFooter</body>
     $districtHead = Get-Head $districtTitle $districtDescription $districtUrl '../../styles.css' $districtLd
     $districtHeader = Get-Header '../../'
     $districtLevels = Get-LevelSection $districtArea $district.Name ''
+    $districtSchools = Get-SchoolSection $districtArea $district.Slug @('elementary','middle','high') ''
     $districtGradeGuide = Get-GradeGuide $districtArea
     $districtFaqSection = Get-FaqSection "$districtArea 수학과외 자주 묻는 질문" $districtFaq
     $districtCta = Get-Cta "$districtArea 수학과외 상담"
@@ -439,6 +480,7 @@ $districtHeader
         <div class="location-intro-copy"><p>$districtArea 수학과외는 최근 시험지와 교재, 평소 학습 시간을 확인하는 진단에서 시작합니다. 같은 학년이라도 개념의 빈틈과 목표가 다르기 때문에 설명 방식과 과제량을 학생별로 조정합니다.</p><p>초등 수학의 개념과 연산, 중등 수학내신의 서술형 풀이, 고등 수학의 개념 연결과 수능대비까지 현재 필요한 단계에 집중합니다.</p></div>
       </section>
 $districtLevels
+$districtSchools
 $districtGradeGuide
 $districtFaqSection
       <section class="local-list" aria-labelledby="hub-title"><p class="section-number">NEIGHBORHOOD</p><h2 id="hub-title">$($district.Name) 생활권별 수학과외</h2><div class="area-links">$($hubLinks -join "`n")</div></section>
@@ -461,6 +503,7 @@ $districtFooter</body>
         $levelLd = (Get-BreadcrumbLd @(@('대전 수학과외', "$siteUrl/"), @("$districtArea 수학과외", $districtUrl), @("$districtArea $($level.Short)수학 과외", $levelUrl))) + (Get-FaqLd $level.Faq)
         $levelHead = Get-Head $levelTitle $levelDescription $levelUrl '../../../styles.css' $levelLd
         $levelHeader = Get-Header '../../../'
+        $levelSchools = Get-SchoolSection $districtArea $district.Slug @($level.Slug) ''
         $gradeCards = foreach ($grade in $level.Grades) {
             $gradeParts = $grade.Split('|')
             "          <article><h3>$($district.Name) $($gradeParts[0]) 수학과외</h3><p>$($gradeParts[1])</p></article>"
@@ -504,6 +547,7 @@ $levelHeader
 $($gradeCards -join "`n")
         </div>
       </section>
+$levelSchools
 $levelFaqSection
       <section class="local-list" aria-labelledby="dong-title"><p class="section-number">$($district.Dongs.Count) AREAS</p><h2 id="dong-title">$($district.Name) 동별 $($level.Short)수학</h2><div class="area-links">$($levelDongLinks -join "`n")</div></section>
       <section class="local-list" aria-labelledby="other-title"><p class="section-number">MORE</p><h2 id="other-title">다른 학년 · 다른 지역</h2><div class="area-links">$(($otherLevelLinks + $otherDistrictLinks) -join "`n")</div></section>
