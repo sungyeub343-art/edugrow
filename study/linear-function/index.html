@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>일차함수 기울기·그래프 정리 | 기울기 구하는 법과 평행이동</title>
+  <meta name="description" content="중2 일차함수의 기울기 구하는 법, y절편과 x절편, 그래프 그리기, 평행이동, 두 직선의 평행과 일치, 일차함수와 일차방정식의 관계를 정리했습니다.">
+  <meta name="naver-site-verification" content="5102b73793afd2b7a181cc7610526b5c668970b5">
+  <meta name="google-site-verification" content="30EmtwePj6A4sjdlOnIHnXM_PbOWzJkuM_wnzxn-6oo">
+  <meta name="theme-color" content="#17352b">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="대전 수학과외">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:title" content="일차함수 기울기·그래프 정리 | 기울기 구하는 법과 평행이동">
+  <meta property="og:description" content="중2 일차함수의 기울기 구하는 법, y절편과 x절편, 그래프 그리기, 평행이동, 두 직선의 평행과 일치, 일차함수와 일차방정식의 관계를 정리했습니다.">
+  <meta property="og:url" content="https://edugrow.kr/study/linear-function/">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=1200&h=630&q=80">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://edugrow.kr/study/linear-function/">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/logo.svg" type="image/svg+xml">
+  <link rel="alternate" type="application/rss+xml" title="대전 수학과외" href="https://edugrow.kr/rss.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"대","item":"전"},{"@type":"ListItem","position":2,"name":"h","item":"t"},{"@type":"ListItem","position":3,"name":"수학 공부법","item":"https://edugrow.kr/study/"},{"@type":"ListItem","position":4,"name":"일차함수 기울기·그래프","item":"https://edugrow.kr/study/linear-function/"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"일차함수 기울기 공식은 무엇인가요?","acceptedAnswer":{"@type":"Answer","text":"기울기는 (y의 값의 증가량) ÷ (x의 값의 증가량)이며, 두 점 (x₁, y₁), (x₂, y₂)를 지나면 (y₂ − y₁) ÷ (x₂ − x₁)입니다."}},{"@type":"Question","name":"x절편은 어떻게 구하나요?","acceptedAnswer":{"@type":"Answer","text":"일차함수의 식에 y = 0을 대입해 x의 값을 구하면 됩니다. y = ax + b에서 x절편은 −b/a입니다."}},{"@type":"Question","name":"일차함수는 몇 학년에 배우나요?","acceptedAnswer":{"@type":"Answer","text":"중학교 2학년에서 배우며, 고등학교 공통수학2의 도형의 방정식(직선의 방정식)으로 이어집니다."}}]}</script>
+</head>
+<body class="location-page">
+  <a class="skip-link" href="#main">본문으로 바로가기</a>
+  <header class="site-header" id="top">
+    <a class="brand" href="../../" aria-label="대전 수학과외 홈"><span class="brand-mark" aria-hidden="true">∑</span><span>대전 수학과외</span></a>
+    <nav class="desktop-nav" aria-label="주요 메뉴"><a href="../../#approach">수업 방식</a><a href="../../#program">학년별 수업</a><a href="../../#area">수업 지역</a></nav>
+    <a class="header-cta" href="tel:01029283614" aria-label="010-2928-3614로 전화 상담">전화 상담</a>
+  </header>
+  <main class="location-main" id="main">
+    <section class="location-hero">
+      <nav class="breadcrumbs" aria-label="현재 위치"><a href="../../">대전</a><span>/</span><a href="../">수학 공부법</a><span>/</span><strong>일차함수 기울기·그래프</strong></nav>
+      <p class="eyebrow">MATH STUDY GUIDE</p>
+      <h1>일차함수,<br>기울기부터 그래프까지</h1>
+      <p>일차함수는 중2 수학의 핵심이자 고등 도형의 방정식으로 이어지는 단원입니다. 식과 그래프를 오가며 이해하는 것이 중요합니다.</p>
+    </section>
+    <div class="location-layout">
+      <article class="guide-body">
+        <h2>일차함수의 뜻</h2>
+        <p>y가 x에 대한 일차식 y = ax + b (a ≠ 0)로 나타날 때 y를 x의 일차함수라고 합니다. 그래프는 항상 직선입니다.</p>
+        <h2>기울기 구하는 법</h2>
+        <p>기울기는 x의 값이 증가할 때 y의 값이 얼마나 증가하는지를 나타냅니다.</p>
+        <p class="formula">기울기 = (y의 값의 증가량) ÷ (x의 값의 증가량) = (y₂ − y₁) ÷ (x₂ − x₁)</p>
+        <p>예를 들어 두 점 (1, 3), (3, 7)을 지나는 직선의 기울기는 (7 − 3) ÷ (3 − 1) = 2입니다. y = ax + b에서 기울기는 a입니다.</p>
+        <ul>
+          <li>a &gt; 0이면 오른쪽 위로 향하는 직선</li>
+          <li>a &lt; 0이면 오른쪽 아래로 향하는 직선</li>
+          <li>|a|가 클수록 y축에 가까운 가파른 직선</li>
+        </ul>
+        <h2>y절편과 x절편</h2>
+        <ul>
+          <li><strong>y절편</strong> — 그래프가 y축과 만나는 점의 y좌표. y = ax + b에서 b입니다.</li>
+          <li><strong>x절편</strong> — 그래프가 x축과 만나는 점의 x좌표. y = 0을 대입하면 x = −b/a입니다.</li>
+        </ul>
+        <p>그래프를 그릴 때는 y절편에서 출발해 기울기만큼 움직인 점을 찍거나, x절편과 y절편 두 점을 이어 그립니다.</p>
+        <h2>평행이동</h2>
+        <p>y = ax의 그래프를 y축의 방향으로 b만큼 평행이동하면 y = ax + b가 됩니다. 평행이동해도 기울기는 변하지 않습니다.</p>
+        <h2>두 직선의 위치 관계</h2>
+        <ul>
+          <li>기울기가 같고 y절편이 다르면 <strong>평행</strong></li>
+          <li>기울기와 y절편이 모두 같으면 <strong>일치</strong></li>
+          <li>기울기가 다르면 한 점에서 만남</li>
+        </ul>
+        <h2>일차함수와 일차방정식</h2>
+        <p>일차방정식 ax + by + c = 0 (b ≠ 0)은 y = −(a/b)x − c/b로 바꿀 수 있어 일차함수의 그래프와 같은 직선을 나타냅니다. 두 일차방정식의 그래프의 교점은 연립방정식의 해입니다.</p>
+        <p>일차함수에서 막힌 부분을 찾아 1:1로 정리해 드립니다. <a href="tel:01029283614">010-2928-3614</a></p>      </article>
+      <section class="faq" aria-labelledby="faq-title">
+        <p class="section-number">FAQ</p>
+        <h2 id="faq-title">자주 묻는 질문</h2>
+        <div class="faq-list">
+          <details><summary><span>일차함수 기울기 공식은 무엇인가요?</span><span aria-hidden="true">+</span></summary><p>기울기는 (y의 값의 증가량) ÷ (x의 값의 증가량)이며, 두 점 (x₁, y₁), (x₂, y₂)를 지나면 (y₂ − y₁) ÷ (x₂ − x₁)입니다.</p></details>
+          <details><summary><span>x절편은 어떻게 구하나요?</span><span aria-hidden="true">+</span></summary><p>일차함수의 식에 y = 0을 대입해 x의 값을 구하면 됩니다. y = ax + b에서 x절편은 −b/a입니다.</p></details>
+          <details><summary><span>일차함수는 몇 학년에 배우나요?</span><span aria-hidden="true">+</span></summary><p>중학교 2학년에서 배우며, 고등학교 공통수학2의 도형의 방정식(직선의 방정식)으로 이어집니다.</p></details>
+        </div>
+      </section>
+      <section class="local-list" aria-labelledby="more-title"><p class="section-number">MORE</p><h2 id="more-title">함께 보면 좋은 글 · 지역별 안내</h2><div class="area-links">        <a href="../pre-high1/"><span>예비고1 수학 공부법</span><span aria-hidden="true">→</span></a>
+        <a href="../pre-middle1/"><span>예비중1 수학 준비</span><span aria-hidden="true">→</span></a>
+        <a href="../math-advance/"><span>수학 선행 어디까지</span><span aria-hidden="true">→</span></a>
+        <a href="../written-answer/"><span>수학 서술형 잘 쓰는 법</span><span aria-hidden="true">→</span></a>
+        <a href="../wrong-answer-note/"><span>수학 오답노트 쓰는 법</span><span aria-hidden="true">→</span></a>
+        <a href="../quadratic-function/"><span>이차함수 꼭짓점·축·판별식</span><span aria-hidden="true">→</span></a>
+        <a href="../factorization/"><span>인수분해 공식 정리</span><span aria-hidden="true">→</span></a>
+        <a href="../give-up-math/"><span>수포자 탈출 공부법</span><span aria-hidden="true">→</span></a>
+        <a href="../high1-study/"><span>고1 수학 공부법</span><span aria-hidden="true">→</span></a>
+        <a href="../elementary-fraction/"><span>초등 분수 개념</span><span aria-hidden="true">→</span></a>
+        <a href="../../areas/seo-gu/"><span>대전 서구 수학과외</span><span aria-hidden="true">→</span></a>
+        <a href="../../areas/yuseong-gu/"><span>대전 유성구 수학과외</span><span aria-hidden="true">→</span></a>
+        <a href="../../areas/jung-gu/"><span>대전 중구 수학과외</span><span aria-hidden="true">→</span></a>
+        <a href="../../areas/dong-gu/"><span>대전 동구 수학과외</span><span aria-hidden="true">→</span></a>
+        <a href="../../areas/daedeok-gu/"><span>대전 대덕구 수학과외</span><span aria-hidden="true">→</span></a></div></section>
+      <section class="location-cta"><div><p class="section-number">CONTACT</p><h2>대전 수학과외 상담</h2></div><a class="button" href="tel:01029283614" aria-label="010-2928-3614로 전화 상담">010-2928-3614 전화 상담</a></section>
+    </div>
+  </main>
+  <footer>
+    <a class="brand footer-brand" href="../../"><span class="brand-mark" aria-hidden="true">∑</span><span>대전 수학과외</span></a>
+    <p>학생의 이해에서 시작하는 1:1 맞춤 수업 · 대전 서구·유성구·중구·동구·대덕구 · 전화 <a href="tel:01029283614">010-2928-3614</a></p>
+    <nav class="footer-links" aria-label="수학과외 가이드"><a href="../../guide/cost/">수학과외 비용</a><a href="../../guide/academy-vs-tutoring/">수학학원 vs 1:1 과외</a><a href="../../guide/choose-tutor/">과외 선생님 고르는 법</a><a href="../../guide/middle-school-grades/">중학교 수학 내신</a><a href="../../guide/high-school-grades/">고등 수학 내신 5등급제</a><a href="../../guide/school-district/">대전 학군지 수학</a><a href="../../school/">학교별 수학과외</a><a href="../../study/">수학 공부법</a></nav>
+    <p class="copyright">© 2026 대전 수학과외</p>
+  </footer></body>
+</html>

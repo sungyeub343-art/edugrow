@@ -224,6 +224,8 @@ footer p a { color: white; text-decoration: underline; }
 .guide-body p { margin: 0 0 1.2rem; }
 .guide-body ul, .guide-body ol { margin: 0 0 1.4rem; padding-left: 1.3rem; }
 .guide-body li + li { margin-top: .6rem; }
+.guide-body .formula { font-family: "Cambria Math", "Times New Roman", serif; font-size: 1.08rem; color: var(--ink); }
+.guide-body p.formula { padding: 1rem 1.2rem; background: var(--white); border-left: 3px solid var(--forest); }
 .guide-body li strong { color: var(--ink); }
 .guide-body p > a:not(.more-link) { border-bottom: 1px solid currentColor; font-weight: 700; }
 .table-wrap { overflow-x: auto; margin-bottom: 1rem; }

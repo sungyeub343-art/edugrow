@@ -215,7 +215,7 @@ function Get-Footer([string]$HomePath) {
   <footer>
     <a class="brand footer-brand" href="$HomePath"><span class="brand-mark" aria-hidden="true">∑</span><span>대전 수학과외</span></a>
     <p>학생의 이해에서 시작하는 1:1 맞춤 수업 · 대전 서구·유성구·중구·동구·대덕구 · 전화 <a href="$phoneTel">$phone</a></p>
-    <nav class="footer-links" aria-label="수학과외 가이드"><a href="${HomePath}guide/cost/">수학과외 비용</a><a href="${HomePath}guide/academy-vs-tutoring/">수학학원 vs 1:1 과외</a><a href="${HomePath}guide/choose-tutor/">과외 선생님 고르는 법</a><a href="${HomePath}guide/middle-school-grades/">중학교 수학 내신</a><a href="${HomePath}guide/high-school-grades/">고등 수학 내신 5등급제</a><a href="${HomePath}guide/school-district/">대전 학군지 수학</a><a href="${HomePath}school/">학교별 수학과외</a></nav>
+    <nav class="footer-links" aria-label="수학과외 가이드"><a href="${HomePath}guide/cost/">수학과외 비용</a><a href="${HomePath}guide/academy-vs-tutoring/">수학학원 vs 1:1 과외</a><a href="${HomePath}guide/choose-tutor/">과외 선생님 고르는 법</a><a href="${HomePath}guide/middle-school-grades/">중학교 수학 내신</a><a href="${HomePath}guide/high-school-grades/">고등 수학 내신 5등급제</a><a href="${HomePath}guide/school-district/">대전 학군지 수학</a><a href="${HomePath}school/">학교별 수학과외</a><a href="${HomePath}study/">수학 공부법</a></nav>
     <p class="copyright">© 2026 대전 수학과외</p>
   </footer>
 "@
@@ -246,6 +246,15 @@ $hubs = @{
     'daedeok-gu' = @(
         'beop|법동|beop-1,beop-2|'
     )
+}
+
+. (Join-Path $PSScriptRoot 'data\study-guides.ps1')
+
+# 학교급에 맞는 수학 공부법 글 링크. $HomePath는 사이트 루트까지의 상대 경로
+function Get-StudyLinks([string]$Level, [string]$HomePath, [string]$Heading) {
+    $links = @($studyGuides | Where-Object { $_.Levels -contains $Level } | ForEach-Object { "        <a href=`"${HomePath}study/$($_.Slug)/`"><span>$($_.Name)</span><span aria-hidden=`"true`">→</span></a>" })
+    if ($links.Count -eq 0) { return '' }
+    return "      <section class=`"local-list`" aria-labelledby=`"study-title`"><p class=`"section-number`">STUDY</p><h2 id=`"study-title`">$Heading</h2><div class=`"area-links`">$($links -join "`n")</div></section>"
 }
 
 $guideLinksHtml = @"
@@ -555,6 +564,7 @@ $($gradeCards -join "`n")
         </div>
       </section>
 $levelSchools
+$(Get-StudyLinks $level.Slug '../../../' "$($level.Short) 수학 공부법")
 $levelFaqSection
       <section class="local-list" aria-labelledby="dong-title"><p class="section-number">$($district.Dongs.Count) AREAS</p><h2 id="dong-title">$($district.Name) 동별 $($level.Short)수학</h2><div class="area-links">$($levelDongLinks -join "`n")</div></section>
       <section class="local-list" aria-labelledby="other-title"><p class="section-number">MORE</p><h2 id="other-title">다른 학년 · 다른 지역</h2><div class="area-links">$(($otherLevelLinks + $otherDistrictLinks) -join "`n")</div></section>
@@ -829,14 +839,22 @@ $guides = @(
     }
 )
 
-foreach ($guide in $guides) {
-    $guideUrl = "$siteUrl/guide/$($guide.Slug)/"
-    $guideLd = (Get-BreadcrumbLd @(@('대전 수학과외', "$siteUrl/"), @($guide.Name, $guideUrl))) + (Get-FaqLd $guide.Faq)
+$guideSections = @(
+    [pscustomobject]@{ Folder = 'guide'; Label = ''; Eyebrow = 'DAEJEON MATH TUTORING GUIDE'; Items = $guides },
+    [pscustomobject]@{ Folder = 'study'; Label = '수학 공부법'; Eyebrow = 'MATH STUDY GUIDE'; Items = $studyGuides }
+)
+foreach ($section in $guideSections) {
+foreach ($guide in $section.Items) {
+    $guideUrl = "$siteUrl/$($section.Folder)/$($guide.Slug)/"
+    $crumbs = @(@('대전 수학과외', "$siteUrl/"))
+    if ($section.Label) { $crumbs += ,@($section.Label, "$siteUrl/$($section.Folder)/") }
+    $crumbs += ,@($guide.Name, $guideUrl)
+    $guideLd = (Get-BreadcrumbLd $crumbs) + (Get-FaqLd $guide.Faq)
     $guideHead = Get-Head $guide.Title $guide.Description $guideUrl '../../styles.css' $guideLd
     $guideHeader = Get-Header '../../'
     $guideBody = $guide.Body.Replace('{TEL}', $phoneTel).Replace('{PHONE}', $phone)
     $guideFaqSection = Get-FaqSection "자주 묻는 질문" $guide.Faq
-    $otherGuides = @($guides | Where-Object { $_.Slug -ne $guide.Slug } | ForEach-Object { "        <a href=`"../$($_.Slug)/`"><span>$($_.Name)</span><span aria-hidden=`"true`">→</span></a>" })
+    $otherGuides = @($section.Items | Where-Object { $_.Slug -ne $guide.Slug } | ForEach-Object { "        <a href=`"../$($_.Slug)/`"><span>$($_.Name)</span><span aria-hidden=`"true`">→</span></a>" })
     $districtGuideLinks = @($districts | ForEach-Object { "        <a href=`"../../areas/$($_.Slug)/`"><span>대전 $($_.Name) 수학과외</span><span aria-hidden=`"true`">→</span></a>" })
     $guideCta = Get-Cta '대전 수학과외 상담'
     $guideFooter = Get-Footer '../../'
@@ -849,8 +867,8 @@ $guideHead</head>
 $guideHeader
   <main class="location-main" id="main">
     <section class="location-hero">
-      <nav class="breadcrumbs" aria-label="현재 위치"><a href="../../">대전</a><span>/</span><strong>$($guide.Name)</strong></nav>
-      <p class="eyebrow">DAEJEON MATH TUTORING GUIDE</p>
+      <nav class="breadcrumbs" aria-label="현재 위치"><a href="../../">대전</a><span>/</span>$(if ($section.Label) { "<a href=`"../`">$($section.Label)</a><span>/</span>" })<strong>$($guide.Name)</strong></nav>
+      <p class="eyebrow">$($section.Eyebrow)</p>
       <h1>$($guide.H1)</h1>
       <p>$($guide.Lead)</p>
     </section>
@@ -865,9 +883,45 @@ $guideCta
 $guideFooter</body>
 </html>
 "@
-    Write-Utf8File (Join-Path $PSScriptRoot "guide\$($guide.Slug)\index.html") $guideHtml
+    Write-Utf8File (Join-Path $PSScriptRoot "$($section.Folder)\$($guide.Slug)\index.html") $guideHtml
     $pages.Insert(1, [pscustomobject]@{ Url = $guideUrl; Title = $guide.Title; Description = $guide.Description })
 }
+}
+
+# 수학 공부법 글 목록
+$studyIndexUrl = "$siteUrl/study/"
+$studyIndexTitle = '수학 공부법 | 예비고1·선행·서술형·오답노트·개념 정리 (대전 수학과외)'
+$studyIndexDescription = '예비고1·예비중1 수학 준비, 수학 선행 순서, 서술형과 오답노트 쓰는 법, 일차함수·이차함수·인수분해·분수 개념 정리까지 학년별 수학 공부법을 모았습니다.'
+$studyCards = foreach ($study in $studyGuides) {
+    "        <a href=`"$($study.Slug)/`"><span>$($study.Name)</span><span aria-hidden=`"true`">→</span></a>"
+}
+$studyIndexHead = Get-Head $studyIndexTitle $studyIndexDescription $studyIndexUrl '../styles.css' (Get-BreadcrumbLd @(@('대전 수학과외', "$siteUrl/"), @('수학 공부법', $studyIndexUrl)))
+$studyIndexHtml = @"
+<!doctype html>
+<html lang="ko">
+<head>
+$studyIndexHead</head>
+<body class="location-page">
+$(Get-Header '../')
+  <main class="location-main" id="main">
+    <section class="location-hero">
+      <nav class="breadcrumbs" aria-label="현재 위치"><a href="../">대전</a><span>/</span><strong>수학 공부법</strong></nav>
+      <p class="eyebrow">MATH STUDY GUIDE</p>
+      <h1>학년별<br>수학 공부법</h1>
+      <p>선행 순서부터 서술형, 오답노트, 단원별 개념 정리까지 수업에서 자주 받는 질문을 글로 정리했습니다.</p>
+    </section>
+    <div class="location-layout">
+      <section class="local-list" aria-labelledby="study-list-title"><p class="section-number">$($studyGuides.Count) ARTICLES</p><h2 id="study-list-title">수학 공부법 전체 글</h2><div class="area-links">
+$($studyCards -join "`n")
+      </div></section>
+$(Get-Cta '대전 수학과외 상담')
+    </div>
+  </main>
+$(Get-Footer '../')</body>
+</html>
+"@
+Write-Utf8File (Join-Path $PSScriptRoot 'study\index.html') $studyIndexHtml
+$pages.Insert(1, [pscustomobject]@{ Url = $studyIndexUrl; Title = $studyIndexTitle; Description = $studyIndexDescription })
 
 # 중·고등학교별 페이지. 학교명/약칭 + 수학과외·내신 검색어를 위한 페이지로, 주소와 가까운 학교 목록은 표준데이터 기준
 $schoolById = @{}
@@ -975,6 +1029,7 @@ $($gradeCards -join "`n")
         </div>
       </section>
 $schoolFaqSection
+$(Get-StudyLinks $school.level '../../' "$short 학생을 위한 수학 공부법")
       <section class="local-list" aria-labelledby="near-title"><p class="section-number">NEARBY</p><h2 id="near-title">$short 주변 $levelLabel 수학과외</h2><div class="area-links">$($nearSameLinks -join "`n")</div></section>
       <section class="school-guide" aria-labelledby="feeder-title"><p class="section-number">NEARBY SCHOOLS</p><h2 id="feeder-title">$feederTitle</h2><ul class="school-list">$($feederItems -join '')</ul><p class="school-source">학교 정보 출처: 전국초중등학교위치표준데이터(2026년 10월 기준). 주변 학교는 좌표상 직선거리 기준입니다.</p></section>
 $schoolCta
@@ -1058,5 +1113,5 @@ Write-Utf8File (Join-Path $PSScriptRoot 'rss.xml') $rss
 
 $levelCount = $districts.Count * $levels.Count
 $hubCount = @($hubs.Values | ForEach-Object { $_ }).Count
-$dongCount = $pages.Count - $districts.Count - $levelCount - $hubCount - $guides.Count - $schoolPages.Count - 2
-Write-Output "Generated $($districts.Count) district, $levelCount grade-level, $hubCount neighborhood hub, $dongCount neighborhood and $($guides.Count) guide and $($schoolPages.Count) school pages."
+$dongCount = $pages.Count - $districts.Count - $levelCount - $hubCount - $guides.Count - $studyGuides.Count - $schoolPages.Count - 3
+Write-Output "Generated $($districts.Count) district, $levelCount grade-level, $hubCount neighborhood hub, $dongCount neighborhood and $($guides.Count) guide, $($studyGuides.Count) study and $($schoolPages.Count) school pages."
