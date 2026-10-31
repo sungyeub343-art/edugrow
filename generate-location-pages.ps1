@@ -87,6 +87,7 @@ $levels = @(
 function Write-Utf8File([string]$Path, [string]$Content) {
     $directory = Split-Path -Parent $Path
     if (-not (Test-Path $directory)) { New-Item -ItemType Directory -Path $directory -Force | Out-Null }
+    if ((Test-Path $Path) -and ([System.IO.File]::ReadAllText($Path, $utf8) -ceq $Content)) { return }
     [System.IO.File]::WriteAllText($Path, $Content, $utf8)
 }
 
@@ -135,7 +136,8 @@ function Get-Head([string]$Title, [string]$Description, [string]$Canonical, [str
   <link rel="alternate" type="application/rss+xml" title="대전 수학과외" href="$siteUrl/rss.xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
   <link rel="stylesheet" href="$StylePath">
 $JsonLd
 "@
@@ -309,6 +311,15 @@ $($groups -join "`n")
 "@
 }
 
+# 검색 결과 설명문을 동마다 다르게 만들기 위한 동네 학교 약칭 목록(중·고 우선). $Offset으로 번호 동끼리 순서를 바꾼다
+function Get-LocalSchoolText([string]$DistrictSlug, [string]$Dong, [int]$Offset) {
+    $list = @(Get-Schools $DistrictSlug 'high' $Dong) + @(Get-Schools $DistrictSlug 'middle' $Dong) + @(Get-Schools $DistrictSlug 'elementary' $Dong)
+    if ($list.Count -eq 0) { return '' }
+    $start = $Offset % $list.Count
+    $picked = for ($i = 0; $i -lt [Math]::Min(3, $list.Count); $i++) { $list[($start + $i) % $list.Count].short }
+    return ($picked -join '·')
+}
+
 # 수학학원·공부방 검색 수요가 확인된 동에 붙이는 안내 문단
 $dongNotes = @{
     'gwanpyeong' = '관평동에서 수학학원, 교습소, 공부방을 함께 알아보는 학부모가 많습니다. 학원 차량이나 반 편성보다 우리 아이가 수업 중에 질문을 하는지, 기초에 빈틈이 있는지를 먼저 보면 학원과 1:1 과외 중 무엇이 맞을지 판단하기 쉽습니다.'
@@ -354,13 +365,22 @@ foreach ($district in $districts) {
             $dongNote = "<p>$($dongNotes[$dongSlug]) 판단 기준은 <a class=`"more-link`" href=`"../../../guide/academy-vs-tutoring/`">수학학원 vs 1:1 과외 비교</a>에 정리해 두었습니다.</p>"
             $dongTitle = "$dongName 수학과외 | 학원·공부방 대신 1:1 초중고 수학 ($districtArea)"
         }
-        $dongDescription = "$districtArea $dongName 수학과외. 초등 기초수학, 중등 수학내신, 고등 수능대비까지 학생 진도에 맞춘 1:1 수학수업. 전화 상담 $phone"
+        $legalDong = Get-LegalDong $dongName
+        $dongNumber = if ($dongName -match '(\d+)동$') { [int]$Matches[1] - 1 } else { 0 }
+        $localSchools = Get-LocalSchoolText $district.Slug $legalDong ($dongNumber * 3)
+        $neighborNames = @($district.Dongs | Where-Object { $_ -ne $dongEntry } | Select-Object -First 2 | ForEach-Object { $_.Split('|')[1] })
+        if ($localSchools) {
+            $dongDescription = "$districtArea $dongName 수학과외. $localSchools 등 $legalDong 학교 내신 대비와 초등 기초수학, 고등 수능대비까지 1:1 수업. 전화 상담 $phone"
+            $dongLead = "$localSchools 등 $legalDong 학교 학생의 교과서와 시험 범위에 맞춰, 초등 기초수학부터 중등 수학내신, 고등 수능대비까지 1:1로 수업합니다."
+        } else {
+            $dongDescription = "$districtArea $dongName 수학과외. $dongName·$($neighborNames -join '·') 일대 초등 기초수학, 중등 수학내신, 고등 수능대비 1:1 수업. 전화 상담 $phone"
+            $dongLead = "$dongName·$($neighborNames -join '·') 일대 학생의 학교 진도에 맞춰, 초등 기초수학부터 중등 수학내신, 고등 수능대비까지 1:1로 수업합니다."
+        }
         $dongFaq = Get-AreaFaq $dongName
         $dongLd = (Get-BreadcrumbLd @(@('대전 수학과외', "$siteUrl/"), @("$districtArea 수학과외", $districtUrl), @("$dongName 수학과외", $dongUrl))) + (Get-FaqLd $dongFaq)
         $dongHead = Get-Head $dongTitle $dongDescription $dongUrl '../../../styles.css' $dongLd
         $dongHeader = Get-Header '../../../'
         $dongLevels = Get-LevelSection $dongName $district.Name '../'
-        $legalDong = Get-LegalDong $dongName
         $dongSchools = Get-SchoolSection $legalDong $district.Slug @('elementary','middle','high') $legalDong '../../../'
         $dongGradeGuide = Get-GradeGuide "$($district.Name) $dongName"
         $dongFaqSection = Get-FaqSection "$dongName 수학과외 자주 묻는 질문" $dongFaq
@@ -378,7 +398,7 @@ $dongHeader
       <nav class="breadcrumbs" aria-label="현재 위치"><a href="../../../">대전</a><span>/</span><a href="../">$($district.Name)</a><span>/</span><strong>$dongName</strong></nav>
       <p class="eyebrow">DAEJEON · $($district.Name) · $dongName</p>
       <h1>$dongName 수학과외</h1>
-      <p>$($dongName)에서 초등 기초수학부터 중등 수학내신, 고등 수능대비까지 학생의 이해 속도에 맞춰 1:1 수학수업 방향을 정합니다.</p>
+      <p>$dongLead</p>
     </section>
     <div class="location-layout">
       <section class="location-intro" aria-labelledby="intro-title">
@@ -410,7 +430,9 @@ $dongFooter</body>
         $hubUrl = "$districtUrl$($hub.Slug)/"
         $hubLinks.Add("        <a href=`"$($hub.Slug)/`"><span>$hubName 수학과외 ($hubShort)</span><span aria-hidden=`"true`">→</span></a>")
         $hubTitle = "$hubName 수학과외 | $hubShort 초중고 1:1 수학 ($districtArea)"
-        $hubDescription = "$districtArea $hubName($hubShort) 수학과외. 학원·공부방 대신 1:1로 초등 기초수학, 중등 수학내신, 고등 수능대비까지 학생 진도에 맞춰 수업합니다. 전화 상담 $phone"
+        $hubSchoolText = Get-LocalSchoolText $district.Slug $hubName 0
+        $hubSchoolPart = if ($hubSchoolText) { "$hubSchoolText 등 학교별 내신 대비, " } else { '' }
+        $hubDescription = "$districtArea $hubName($hubShort) 수학과외. 학원·공부방 대신 1:1로 $($hubSchoolPart)초등 기초수학부터 고등 수능대비까지 수업합니다. 전화 상담 $phone"
         $hubFaq = @(
             "$hubName 수학과외는 $hubShort 모두 수업하나요?|네. $($subNames -join ', ') 모두 상담할 수 있으며, 학생의 위치와 희망 시간에 따라 대면 수업 가능 여부를 안내합니다. 온라인 수업도 협의할 수 있습니다.",
             "$hubName 수학학원이나 공부방과 무엇이 다른가요?|학원과 공부방은 여러 학생이 같은 진도로 수업하는 경우가 많습니다. 1:1 수학과외는 학생 한 명의 시험지와 교재를 기준으로 진도와 설명 방식, 과제량을 정합니다.",
@@ -465,7 +487,8 @@ $hubFooter</body>
     }
 
     $districtTitle = "$districtArea 수학과외 | 초등·중등·고등 수학수업, 내신·수능대비"
-    $districtDescription = "$districtArea 초중고 1:1 수학과외. 초등 기초수학과 수학공부 습관, 중등 수학내신, 고등 수능수학까지 학생별 진단으로 수업합니다. 전화 상담 $phone"
+    $districtSchoolCount = @($schoolData | Where-Object { $_.district -eq $district.Slug }).Count
+    $districtDescription = "$districtArea 초중고 1:1 수학과외. $($district.Name) 초·중·고 $($districtSchoolCount)곳 학교별 내신 대비, 초등 기초수학부터 고등 수능수학까지 학생별 진단으로 수업합니다. 전화 상담 $phone"
     $districtFaq = Get-AreaFaq $districtArea
     $districtLd = (Get-BreadcrumbLd @(@('대전 수학과외', "$siteUrl/"), @("$districtArea 수학과외", $districtUrl))) + (Get-FaqLd $districtFaq)
     $districtHead = Get-Head $districtTitle $districtDescription $districtUrl '../../styles.css' $districtLd
@@ -1085,7 +1108,14 @@ $(Get-Footer '../')</body>
 Write-Utf8File (Join-Path $PSScriptRoot 'school\index.html') $schoolIndexHtml
 $pages.Insert(1, [pscustomobject]@{ Url = $schoolIndexUrl; Title = $schoolIndexTitle; Description = $schoolIndexDescription })
 
-$sitemapEntries = $pages | ForEach-Object { "  <url><loc>$($_.Url)</loc><lastmod>$today</lastmod></url>" }
+# lastmod는 실제로 내용이 바뀐 날짜(파일 수정일). Write-Utf8File은 내용이 같으면 파일을 다시 쓰지 않는다
+foreach ($page in $pages) {
+    $relative = $page.Url.Substring($siteUrl.Length).TrimStart('/').Replace('/', '\')
+    $file = Join-Path $PSScriptRoot ($relative + 'index.html')
+    $modified = if (Test-Path $file) { (Get-Item $file).LastWriteTime } else { Get-Date }
+    $page | Add-Member -NotePropertyName Modified -NotePropertyValue $modified -Force
+}
+$sitemapEntries = $pages | ForEach-Object { "  <url><loc>$($_.Url)</loc><lastmod>$($_.Modified.ToString('yyyy-MM-dd'))</lastmod></url>" }
 $sitemap = @"
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -1095,8 +1125,8 @@ $($sitemapEntries -join "`n")
 Write-Utf8File (Join-Path $PSScriptRoot 'sitemap.xml') $sitemap
 
 # 네이버 서치어드바이저 RSS 제출용 피드
-$pubDate = (Get-Date).ToUniversalTime().ToString('r')
-$rssItems = $pages | ForEach-Object { "    <item><title>$($_.Title)</title><link>$($_.Url)</link><guid>$($_.Url)</guid><description>$($_.Description)</description><pubDate>$pubDate</pubDate></item>" }
+# 최근에 바뀐 페이지가 먼저 오도록 정렬
+$rssItems = $pages | Sort-Object Modified -Descending | ForEach-Object { "    <item><title>$($_.Title)</title><link>$($_.Url)</link><guid>$($_.Url)</guid><description>$($_.Description)</description><pubDate>$($_.Modified.ToUniversalTime().ToString('r'))</pubDate></item>" }
 $rss = @"
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
